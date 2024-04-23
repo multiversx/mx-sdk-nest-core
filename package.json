@@ -1,6 +1,6 @@
 {
   "name": "@multiversx/sdk-nestjs-cli",
-  "version": "1.0.4",
+  "version": "1.0.1",
   "description": "MultiversX configuration schema helper functions",
   "author": "",
   "private": false,
