@@ -1,13 +1,13 @@
 {
-  "name": "@multiversx/sdk-nest-cli",
+  "name": "@multiversx/sdk-json-schema-expander",
   "version": "1.0.8",
   "description": "MultiversX configuration schema helper functions",
   "author": "",
   "private": false,
   "license": "UNLICENSED",
   "bin": {
-    "mxnest": "./dist/cli.js",
-    "sdk-nest-cli": "./dist/cli.js"
+    "sdk-nestjs-cli": "./dist/cli.js",
+    "mxnest": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
@@ -19,8 +19,11 @@
   },
   "dependencies": {
     "@types/js-yaml": "^4.0.9",
+    "commander": "^12.0.0",
     "js-yaml": "^4.1.0",
-    "tslib": "^2.6.2"
+    "json-schema-to-typescript": "^14.0.0",
+    "tslib": "^2.6.2",
+    "yaml": "^2.4.1"
   },
   "devDependencies": {
     "@types/jest": "^29.5.1",

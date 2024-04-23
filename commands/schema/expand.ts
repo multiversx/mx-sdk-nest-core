@@ -1,4 +1,26 @@
-export class ConfigurationSchemaExpander {
+import yaml from 'js-yaml';
+import fs from 'fs';
+
+export class ExpandSchemaCommand {
+  static execute(inputFilename: string, outputFilename: string) {
+    // Parse the input file based on its extension
+    let inputObject;
+    if (inputFilename.endsWith('.yaml')) {
+      inputObject = yaml.load(fs.readFileSync(inputFilename, 'utf8'));
+    } else if (inputFilename.endsWith('.json')) {
+      inputObject = JSON.parse(fs.readFileSync(inputFilename, 'utf8'));
+    } else {
+      console.log('Invalid input file. Should be yaml or json.');
+      process.exit(1);
+    }
+
+    // Call your package function here
+    const expandedObject = this.expand(inputObject);
+
+    // Write the expanded object to the output file
+    fs.writeFileSync(outputFilename, JSON.stringify(expandedObject, null, 2));
+  }
+
   static expand(input: any) {
     input['$schema'] = 'http://json-schema.org/draft-07/schema#';
 

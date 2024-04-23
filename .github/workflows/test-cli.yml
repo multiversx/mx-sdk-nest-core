@@ -1,0 +1,22 @@
+name: Test CLI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 16
+          registry-url: https://registry.npmjs.org/
+
+      - run: npm install -g @multiversx/sdk-json-schema-expander
+
+      - name: Run it with the repo test data
+        run: sdk-json-schema-expander ./test/testdata/test-input.yaml output-schema.json

@@ -1,0 +1,89 @@
+{
+  "title": "config",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "apps": {
+      "type": "object",
+      "properties": {
+        "api": {
+          "type": "object",
+          "properties": {
+            "urls": {
+              "type": "object",
+              "properties": {
+                "prefix": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "prefix"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "urls"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "api"
+      ],
+      "additionalProperties": false
+    },
+    "libs": {
+      "type": "object",
+      "properties": {
+        "common": {
+          "type": "object",
+          "properties": {
+            "urls": {
+              "type": "object",
+              "properties": {
+                "api": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "api"
+              ],
+              "additionalProperties": false
+            },
+            "redis": {
+              "type": "object",
+              "properties": {
+                "host": {
+                  "type": "string"
+                },
+                "port": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "host",
+                "port"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "required": [
+            "urls",
+            "redis"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "common"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "apps",
+    "libs"
+  ],
+  "additionalProperties": false
+}

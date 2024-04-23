@@ -1,0 +1,12 @@
+title: config
+apps:
+  api:
+    urls:
+      prefix: string
+libs:
+  common:
+    urls:
+      api: string
+    redis:
+      host: string
+      port: integer
