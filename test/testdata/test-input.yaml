@@ -1,0 +1,66 @@
+title: config
+apps:
+  api:
+    urls:
+      prefix: string
+    features:
+      publicApi:
+        enabled: boolean
+        port: integer
+      privateApi:
+        enabled: boolean
+        port: integer
+libs:
+  common:
+    urls:
+      api: string
+    redis:
+      host: string
+      port: integer
+    database:
+      host: string
+      port: integer
+      username: string
+      password: string
+      name: string
+      tlsAllowInvalidCertificates: boolean
+    features:
+      eventsNotifier:
+        enabled: boolean
+        port: integer
+        url: string
+        exchange: string
+        queue: string
+        revertExchange:
+          type: string
+          required: false
+        revertQueue:
+          type: string
+          required: false
+      keepAliveAgent:
+        enabled: boolean
+    nativeAuth:
+      maxExpirySeconds:
+        type: integer
+        minimum: 1
+        required: false
+      acceptedOrigins:
+        type: array
+        items: string
+    security:
+      admins:
+        type: array
+        items: string
+        required: false
+    rateLimiterSecret:
+      type: string
+      required: false
+    keepAliveTimeout:
+      downstream: integer
+      upstream: integer
+    useCachingInterceptor:
+      type: boolean
+      required: false
+    numShards:
+      type: integer
+      minimum: 1
