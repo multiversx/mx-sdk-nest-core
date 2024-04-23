@@ -5,7 +5,6 @@ import { GenerateSchemaCommand } from './schema/generate';
 import { ExpandSchemaCommand } from './schema/expand';
 import { TypesSchemaCommand } from './schema/types';
 
-// Create a new command object for 'config'
 const schema = program.command('schema')
   .description('Configuration schema operations');
 
