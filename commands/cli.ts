@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { GenerateSchemaCommand } from './commands/schema/generate';
-import { ExpandSchemaCommand } from './commands/schema/expand';
-import { TypesSchemaCommand } from './commands/schema/types';
+import { GenerateSchemaCommand } from './schema/generate';
+import { ExpandSchemaCommand } from './schema/expand';
+import { TypesSchemaCommand } from './schema/types';
 
 // Create a new command object for 'config'
 const schema = program.command('schema')
