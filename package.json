@@ -6,8 +6,7 @@
   "private": false,
   "license": "UNLICENSED",
   "bin": {
-    "sdk-nestjs-cli": "./dist/commands/cli.js",
-    "mxnest": "./dist/commands/cli.js"
+    "sdk-nestjs-cli": "./dist/commands/cli.js"
   },
   "scripts": {
     "build": "tsc",
