@@ -9,19 +9,36 @@ export class StartAppsCommand {
 
     try {
       await execPromise('tmux -V');
-      console.log('tmux is installed.');
+      try {
+        await execPromise(`tmux has-session -t ${tmuxSessionName}`);
+        console.log(`Session ${tmuxSessionName} already exists. Reusing the session.`);
+      } catch (error) {
+        if ((error as any).code === 1) {
+          await execPromise(`tmux new-session -d -s ${tmuxSessionName}`);
+          console.log(`Created new tmux session: ${tmuxSessionName}`);
+        } else {
+          throw error;
+        }
+      }
 
-      await execPromise(`tmux new-session -d -s ${tmuxSessionName}`);
-      console.log(`Created new tmux session: ${tmuxSessionName}`);
+      let windowsCreated = 0;
 
       for (const app of apps) {
         console.log(`Starting ${app} app...`);
         await execPromise(`tmux new-window -t ${tmuxSessionName} -n ${app} "npm run start:${app}"`);
+        console.log(`Started ${app} app in a new tmux window.`);
+        windowsCreated++;
       }
 
-      await execPromise(`tmux attach-session -t ${tmuxSessionName}`);
+      console.log(`Total applications started: ${windowsCreated}`);
+
+      const { stdout: tmuxListWindows } = await execPromise(`tmux list-windows -t ${tmuxSessionName}`);
+      console.log('tmux windows:\n', tmuxListWindows);
+
+      console.log(`To attach to the tmux session, run: tmux attach-session -t ${tmuxSessionName}`);
     } catch (error) {
-      console.error('Failed to start applications:', error);
+      const err = error as Error;
+      console.error('Failed to start applications:', err.message);
       process.exit(1);
     }
   }
