@@ -34,7 +34,10 @@
     "typeRoots": [
       "node_modules/@types"
     ],
-    "types": ["node"],
+    "types": [
+      "node",
+      "jest"
+    ],
     "skipLibCheck": true,
     "resolveJsonModule": true,
   }

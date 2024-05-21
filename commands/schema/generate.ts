@@ -3,6 +3,8 @@ import jsYaml from 'js-yaml';
 import fs from 'fs';
 
 export class GenerateSchemaCommand {
+  private static readonly OPTIONAL_PREFIX = 'optional_';
+
   static execute(inputFilename: string, outputFilename: string) {
     // Parse the input file based on its extension
     if (!(inputFilename.endsWith('.yaml') || inputFilename.endsWith(".YAML") || inputFilename.endsWith(".yml"))) {
@@ -20,7 +22,7 @@ export class GenerateSchemaCommand {
   static generateSchema(yamlContent: string): any {
     // Parse YAML line by line to mark commented lines with properties as optional
     const lines = yamlContent.split('\n');
-    let modifiedLines = lines.map(line => {
+    const modifiedLines = lines.map(line => {
       if (line.trim().startsWith('#') && line.includes(':')) {
         // Commented line with a property, mark it as optional while preserving indentation
         const indentation = line.search(/\S|$/); // Find the index of the first non-whitespace character
@@ -39,7 +41,6 @@ export class GenerateSchemaCommand {
       return line;
     });
 
-    modifiedLines = ["title: config", ...modifiedLines];
 
     // Parse modified YAML content into an object
     const modifiedYamlContent = modifiedLines.join('\n');
@@ -47,45 +48,65 @@ export class GenerateSchemaCommand {
     const parsedYaml = yaml.parse(modifiedYamlContent);
 
     // Rename keys and add required: false for optional properties
-    return this.modifyYamlObject(parsedYaml);
+    const result = this.modifyYamlObject(parsedYaml);
+    result.title = "config";
+
+    return result;
   }
 
   static modifyYamlObject(obj: any): any {
     const schema: any = {};
+
     for (const key in obj) {
-      if (key === "title") {
-        schema[key] = "config";
+      const type = this.getType(obj[key]);
+      schema[key] = { type };
+
+      if (type === 'array') {
+        schema[key] = this.handleArray(obj, key);
         continue;
       }
-      if (Array.isArray(obj[key])) {
-        schema[key] = { type: 'array', items: typeof obj[key][0] };
-        return schema;
-      }
-      if (typeof obj[key] === 'object') {
+
+      if (type === 'object') {
         schema[key] = this.modifyYamlObject(obj[key]);
+        continue;
+      }
+
+      const isOptional = key.startsWith(this.OPTIONAL_PREFIX);
+      if (isOptional) {
+        const newKey = key.slice(this.OPTIONAL_PREFIX.length);
+        const valueType = this.getType(obj[key]);
+
+        schema[newKey] = { type: valueType, required: false };
+        delete schema[key];
       } else {
-        // Rename the key to remove 'optional_' prefix
-        const newKey = key.startsWith('optional_') ? key.slice(9) : key;
-        // Add required: false for optional properties
-        if (key.startsWith('optional_')) {
-          // Determine the type dynamically based on the value
-          const valueType = this.getType(obj[key]);
-          schema[newKey] = { type: valueType, required: false };
-        } else {
-          schema[newKey] = this.getType(obj[key]);
-        }
+        schema[key] = this.getType(obj[key]);
       }
     }
+
     return schema;
   }
 
-  static getType(value: any): string {
+  private static handleArray(obj: any, key: string): any {
+    const itemsType = this.getType(obj[key][0]);
+    const result: any = { type: 'array' };
+    if (itemsType === 'object') {
+      result.items = this.modifyYamlObject(obj[key][0]);
+    } else {
+      result.items = itemsType;
+    }
+
+    return result;
+  }
+
+  private static getType(value: any): string {
     if (Array.isArray(value)) {
       return 'array';
-    } else if (typeof value === 'number' && Number.isInteger(value)) {
-      return 'integer';
-    } else {
-      return typeof value;
     }
+
+    if (typeof value === 'number' && Number.isInteger(value)) {
+      return 'integer';
+    }
+
+    return typeof value;
   }
 }
